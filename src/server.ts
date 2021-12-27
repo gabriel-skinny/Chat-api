@@ -1,4 +1,5 @@
 import { createServer, IncomingMessage, ServerResponse } from "http";
+import { Database } from "./Database/firebase";
 import { Routes } from "./routes";
 
 class Server {
@@ -7,8 +8,14 @@ class Server {
 
     constructor() {
         this.server();
+        this.database();
         this.req = null;
         this.res = null;
+
+    }
+
+    database() {
+        new Database();
     }
 
     server() {
