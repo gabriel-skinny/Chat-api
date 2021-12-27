@@ -6,21 +6,19 @@ import { CreateUserService } from "../Services/CreateUserService";
 class CreateUserController {
     async handle(req: IncomingMessage, res: ServerResponse) {
         const service = new CreateUserService();
-        let body = '';
+        let buffers = [];
         
-        req.on("data", (chunk) => {
-            body += chunk;
-            /* console.log(body, "body") */
-        })
-
-
+        for await (const chunk of req) {
+            buffers.push(chunk);
+        }
+        const body =  Buffer.concat(buffers).toString();
       
-        console.log(body, "bodydepois");
+        console.log(JSON.parse(body), "bodydepois");
       try {
-        /* const response = await service.execute(objectBody); */
+        const response = await service.execute(JSON.parse(body));
 
         res.statusCode = 200;
-        return res.end({ teste: "ok"});
+        return res.end(response);
       }catch(err) {
         res.statusCode = 401;
         return res.end(JSON.stringify({ Error: err.message }));
